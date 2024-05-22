@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic List Rendering</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    function Image({ src }) {
+      return <img src={src} alt="Gallery Image" style={{ width: '100%', height: 'auto' }} />;
+    }
+
+    function Gallery({ children }) {
+      return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gridGap: '10px' }}>
+          {children}
+        </div>
+      );
+    }
+
+   
+    const initialImages = [
+      "https://images.pexels.com/photos/23476916/pexels-photo-23476916/free-photo-of-a-black-and-white-photo-of-a-cathedral.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "https://images.pexels.com/photos/22698024/pexels-photo-22698024/free-photo-of-man-lying-on-a-wall-by-the-water-in-a-mountain-valley-in-black-and-white.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    ];
+
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          images: initialImages
+        };
+        this.addImage = this.addImage.bind(this);
+        this.removeImage = this.removeImage.bind(this);
+      }
+
+      addImage() {
+        const newImage = prompt("Enter the URL of the image:");
+        if (newImage) {
+          this.setState(prevState => ({
+            images: [...prevState.images, newImage]
+          }));
+        }
+      }
+
+      removeImage(index) {
+        this.setState(prevState => ({
+          images: prevState.images.filter((_, i) => i !== index)
+        }));
+      }
+
+      render() {
+        return (
+          <div>
+            <button onClick={this.addImage}>Add Image</button>
+            <Gallery>
+              {this.state.images.map((src, index) => (
+                <div key={index}>
+                  <Image src={src} />
+                  <button onClick={() => this.removeImage(index)}>Remove</button>
+                </div>
+              ))}
+            </Gallery>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
